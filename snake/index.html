@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500"> </canvas>
+    <script>
+        let canvas = document.getElementById("canvas");
+        let ctx = canvas.getContext("2d");
+        let width = canvas.width;
+        let height = canvas.height;
+        let boxSize = 10;  //размер одной ячейки
+        let boxInWidth = width / boxSize;  //ячейка в ширине
+        let boxInHeight = height / boxSize; //ячейка в высоте
+
+        function drowBorder() { //границы
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, width, boxSize);
+            ctx.fillRect(width - boxSize, 0, boxSize, height);
+            ctx.fillRect(0, height - boxSize, width, boxSize);
+            ctx.fillRect(0, 0, boxSize, height);
+        }
+
+        function Block(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        Block.prototype.drowRect = function () {
+            ctx.fillStyle = "blue";
+            ctx.fillRect(this.x * boxSize, this.y * boxSize, boxSize, boxSize);
+        }
+        Block.prototype.drowCircle = function () { //яблоко
+            ctx.fillStyle = "red";
+            ctx.beginPath();
+            ctx.arc(this.x * boxSize + boxSize / 2, this.y * boxSize + boxSize / 2, boxSize / 2, 0, Math.PI * 2, false);
+            ctx.fill();
+        }
+        let apple = new Block(30, 13);//первоначальное появление яблока
+
+
+        function Snake() {
+            this.elements = [ //первоначальный размер змейки
+                new Block(20, 15),
+                new Block(19, 15),
+                new Block(18, 15)
+            ];
+            this.napr = "right"; //первоначальное направление змейки
+        }
+        Snake.prototype.drow = function () {
+            for (let index = 0; index < this.elements.length; index++) {
+                this.elements[index].drowRect();
+            }
+        }
+        Snake.prototype.move = function () {
+            let newHead = new Block(this.elements[0].x, this.elements[0].y);
+            if (this.napr == "right") {
+                newHead.x += 1;
+            }
+            else if (this.napr == "left") {
+                newHead.x -= 1;
+            } else if (this.napr == "up") {
+                newHead.y -= 1;
+            }
+            else if (this.napr == "down") {
+                newHead.y += 1;
+            }
+            this.elements.unshift(newHead);
+
+            if (!(newHead.x == apple.x && newHead.y == apple.y)) { //соприкосновение с яблоком
+                this.elements.pop();
+            }
+
+        }
+        let snake = new Snake(); //обьявление обьекта змейки
+        let interv = setInterval(function name() {
+            ctx.clearRect(0, 0, width, height);
+            drowBorder();
+            apple.drowCircle();
+            snake.move();
+            snake.drow();
+        }, 500);
+
+        $(document).keydown(function (event) {
+            if (event.keyCode == 40 && snake.napr != "up") {
+                snake.napr = "down";
+            } else if (event.keyCode == 37 && snake.napr != "right") {
+                snake.napr = "left";
+            }
+            else if (event.keyCode == 39 && snake.napr != "left") {
+                snake.napr = "right";
+            }
+            else if (event.keyCode == 38 && snake.napr != "down") {
+                snake.napr = "up";
+            }
+        });
+
+        console.log(width);
+        console.log(height);
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+body{
+    background-color: darkblue;
+}
+.row{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+}
+.cub{
+    background-color:chartreuse;
+    height: 200px;
+    width: 200px;
+    margin: 10px;
+}
+.cub:hover{
+    background-color: black;
+}
+.score{
+    background-color:chartreuse;
+    height: 200px;
+    width: 400px;
+    margin: 10px 100px ;
+}
+.score div{
+    display: flex;
+    flex-direction: row;
+    font-size: 25px;
+    padding-top: 0;
+}
